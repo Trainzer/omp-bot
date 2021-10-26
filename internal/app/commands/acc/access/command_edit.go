@@ -6,7 +6,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (c *AccAccessCommander) Edit(inputMessage *tgbotapi.Message) {
+func (c *accAccessCommander) Edit(inputMessage *tgbotapi.Message) {
 	var outMsgText string
 
 	outMsgText = "Edit not implemented"

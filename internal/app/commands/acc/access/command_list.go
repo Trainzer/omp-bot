@@ -8,7 +8,7 @@ import (
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
-func (c *AccAccessCommander) List(inputMessage *tgbotapi.Message) {
+func (c *accAccessCommander) List(inputMessage *tgbotapi.Message) {
 	outputMsgText := "Here all the products: \n\n"
 
 	accesses := c.accessService.List(0, 0)
@@ -24,8 +24,8 @@ func (c *AccAccessCommander) List(inputMessage *tgbotapi.Message) {
 	})
 
 	callbackPath := path.CallbackPath{
-		Domain:       "demo",
-		Subdomain:    "subdomain",
+		Domain:       "add",
+		Subdomain:    "access",
 		CallbackName: "list",
 		CallbackData: string(serializedData),
 	}

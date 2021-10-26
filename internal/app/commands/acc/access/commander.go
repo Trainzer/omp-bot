@@ -8,21 +8,21 @@ import (
 	"github.com/ozonmp/omp-bot/internal/service/acc/access"
 )
 
-type AccAccessCommander struct {
+type accAccessCommander struct {
 	bot           *tgbotapi.BotAPI
 	accessService *access.Service
 }
 
 func NewAccAccessCommander(
 	bot *tgbotapi.BotAPI,
-) *AccAccessCommander {
-	return &AccAccessCommander{
+) *accAccessCommander {
+	return &accAccessCommander{
 		bot:           bot,
 		accessService: access.NewService(),
 	}
 }
 
-func (c *AccAccessCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *accAccessCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	switch callbackPath.CallbackName {
 	case "list":
 		c.CallbackList(callback, callbackPath)
@@ -31,7 +31,7 @@ func (c *AccAccessCommander) HandleCallback(callback *tgbotapi.CallbackQuery, ca
 	}
 }
 
-func (c *AccAccessCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
+func (c *accAccessCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.CommandName {
 	case "help":
 		c.Help(msg)
