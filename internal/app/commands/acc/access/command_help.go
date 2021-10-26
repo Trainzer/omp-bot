@@ -8,12 +8,12 @@ import (
 
 func (c *accAccessCommander) Help(inputMessage *tgbotapi.Message) {
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID,
-		"/help - help\n"+
-			"/get - list access by id\n"+
-			"/list - list accesses\n"+
-			"/delete - delete access\n"+
-			"/new - new access\n"+
-			"/edit - edit access\n",
+		"/help__acc__access - help\n"+
+			"/get__acc__access - list access by id\n"+
+			"/list__acc__access - list accesses\n"+
+			"/delete__acc__access - delete access\n"+
+			"/new__acc__access - new access\n"+
+			"/edit__acc__access - edit access\n",
 	)
 
 	_, err := c.bot.Send(msg)

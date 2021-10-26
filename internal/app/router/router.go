@@ -22,7 +22,7 @@ type Router struct {
 	// demoCommander
 	demoCommander Commander
 	// user
-	access Commander
+	acc Commander
 	// buy
 	// delivery
 	// recommendation
@@ -57,7 +57,7 @@ func NewRouter(
 		// demoCommander
 		demoCommander: demo.NewDemoCommander(bot),
 		// user
-		access: acc.NewAccCommander(bot),
+		acc: acc.NewAccCommander(bot),
 		// buy
 		// delivery
 		// recommendation
@@ -111,8 +111,8 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 		c.demoCommander.HandleCallback(callback, callbackPath)
 	case "user":
 		break
-	case "access":
-		c.access.HandleCallback(callback, callbackPath)
+	case "acc":
+		c.acc.HandleCallback(callback, callbackPath)
 	case "buy":
 		break
 	case "delivery":
@@ -182,8 +182,8 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 		c.demoCommander.HandleCommand(msg, commandPath)
 	case "user":
 		break
-	case "access":
-		c.access.HandleCommand(msg, commandPath)
+	case "acc":
+		c.acc.HandleCommand(msg, commandPath)
 	case "buy":
 		break
 	case "delivery":
