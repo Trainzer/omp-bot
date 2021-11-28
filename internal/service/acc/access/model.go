@@ -7,6 +7,7 @@ var allEntities = []Access{
 	{ID: 1, Role_ID: 2, Resource_ID: 1},
 	{ID: 1, Role_ID: 2, Resource_ID: 3},
 	{ID: 1, Role_ID: 7, Resource_ID: 2},
+	{ID: 1, Role_ID: 8, Resource_ID: 25},
 }
 
 type Access struct {

@@ -8,10 +8,24 @@ import (
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
-func (c *accAccessCommander) List(inputMessage *tgbotapi.Message) {
-	outputMsgText := "Here all the products: \n\n"
+const (
+	rows_per_page = uint64(3)
+)
 
-	accesses := c.accessService.List(0, 0)
+func (c *accAccessCommander) List(inputMessage *tgbotapi.Message) {
+
+	pageData := CallbackListData{}
+	err := json.Unmarshal([]byte(inputMessage.CommandArguments()), &pageData)
+
+	startIndex := uint64(0)
+
+	if err != nil {
+		startIndex = uint64(pageData.Offset)
+	}
+
+	outputMsgText := "Here all the accesses: \n\n"
+
+	accesses, isLast := c.accessService.List(startIndex, rows_per_page)
 	for _, p := range accesses {
 		outputMsgText += c.accessService.String(p)
 		outputMsgText += "\n"
@@ -19,24 +33,26 @@ func (c *accAccessCommander) List(inputMessage *tgbotapi.Message) {
 
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 
-	serializedData, _ := json.Marshal(CallbackListData{
-		Offset: 21,
-	})
+	if !isLast {
+		serializedData, _ := json.Marshal(CallbackListData{
+			Offset: int(rows_per_page),
+		})
 
-	callbackPath := path.CallbackPath{
-		Domain:       "add",
-		Subdomain:    "access",
-		CallbackName: "list",
-		CallbackData: string(serializedData),
+		callbackPath := path.CallbackPath{
+			Domain:       "acc",
+			Subdomain:    "access",
+			CallbackName: "list",
+			CallbackData: string(serializedData),
+		}
+
+		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("Next page", callbackPath.String()),
+			),
+		)
 	}
 
-	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
-		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("Next page", callbackPath.String()),
-		),
-	)
-
-	_, err := c.bot.Send(msg)
+	_, err = c.bot.Send(msg)
 	if err != nil {
 		log.Printf("AccAccessCommander.List: error sending reply message to chat - %v", err)
 	}
