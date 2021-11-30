@@ -67,6 +67,7 @@ func (s *Service) Create(acc Access) (uint64, error) {
 	} else {
 		newId = allEntities[len(allEntities)-1].ID + 1
 	}
+	acc.ID = newId
 	allEntities = append(allEntities, acc)
 	return newId, nil
 }
