@@ -20,8 +20,15 @@ type AccessService interface {
 	String(p Access) string
 }
 
-func (s *Service) List(cursor uint64, limit uint64) []Access {
-	return allEntities
+func (s *Service) List(cursor uint64, limit uint64) ([]Access, bool) {
+	allEntitiesLen := uint64(len(allEntities))
+	if cursor >= allEntitiesLen {
+		return []Access{}, true
+	}
+	if cursor+limit >= allEntitiesLen {
+		return allEntities[cursor:], true
+	}
+	return allEntities[cursor : cursor+limit], false
 }
 
 func (s *Service) Describe(accessID uint64) (*Access, error) {
@@ -60,6 +67,7 @@ func (s *Service) Create(acc Access) (uint64, error) {
 	} else {
 		newId = allEntities[len(allEntities)-1].ID + 1
 	}
+	acc.ID = newId
 	allEntities = append(allEntities, acc)
 	return newId, nil
 }

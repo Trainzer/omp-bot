@@ -2,7 +2,6 @@ package access
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -22,12 +21,37 @@ func (c accAccessCommander) CallbackList(callback *tgbotapi.CallbackQuery, callb
 			"input string %v - %v", callbackPath.CallbackData, err)
 		return
 	}
-	msg := tgbotapi.NewMessage(
-		callback.Message.Chat.ID,
-		fmt.Sprintf("Parsed: %+v\n", parsedData),
-	)
+
+	outputMsgText := ""
+
+	accesses, isLast := c.accessService.List(uint64(parsedData.Offset), rows_per_page)
+	for _, p := range accesses {
+		outputMsgText += c.accessService.String(p)
+		outputMsgText += "\n"
+	}
+	msg := tgbotapi.NewMessage(callback.Message.Chat.ID, outputMsgText)
+
+	if !isLast {
+		serializedData, _ := json.Marshal(CallbackListData{
+			Offset: int(rows_per_page) + parsedData.Offset,
+		})
+
+		callbackPath := path.CallbackPath{
+			Domain:       "acc",
+			Subdomain:    "access",
+			CallbackName: "list",
+			CallbackData: string(serializedData),
+		}
+
+		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("Next page", callbackPath.String()),
+			),
+		)
+	}
+
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("AccAccessCommander.CallbackList: error sending reply message to chat - %v", err)
+		log.Printf("AccAccessCommander.List: error sending reply message to chat - %v", err)
 	}
 }
